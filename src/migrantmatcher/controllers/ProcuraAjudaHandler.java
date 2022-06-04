@@ -22,6 +22,16 @@ public class ProcuraAjudaHandler {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void indicaDadosCasal(String nome, int contacto) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void indicaOutroMembro(String nome) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	public List<Regiao> pedeListaRegioesPossiveis() {
 		return lr.getListaRegioes();
@@ -42,6 +52,7 @@ public class ProcuraAjudaHandler {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	
 }
