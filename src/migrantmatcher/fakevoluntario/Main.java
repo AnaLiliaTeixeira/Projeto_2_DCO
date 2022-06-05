@@ -1,6 +1,11 @@
 package migrantmatcher.fakevoluntario;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -14,43 +19,53 @@ import migrantmatcher.domain.Voluntario;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
 public class Main {
-	public static void main(String[] args) throws RegiaoNaoDisponivelException {
+	public static void main(String[] args) throws RegiaoNaoDisponivelException, IOException {
 		
 		RegistaAjudaHandler rah = new MigrantMatcher().getRegistaAjudaHandler();
 		Random rd = new Random();
 		Scanner sc = new Scanner(System.in);
+		Properties prop = new Properties();
 		
-		
-		if (rd.nextBoolean()) {
-			int contacto = sc.nextInt();
-			Voluntario vol = rah.identificaVoluntario(contacto);	
-		}
-		//LER DO FICHEIRO PROPERTIES
-		String ajuda = sc.nextLine();
-		
-		if (ajuda == "alojamento") {
-			int numeroPessoas = sc.nextInt();
+		try {
+			prop.load(new FileInputStream(new File("prop.properties")));
 			
-			List<Regiao> lr = rah.indicaNumeroPessoas(numeroPessoas); //ListaRegiao
-			String regiao = sc.nextLine();
-			Regiao reg = rah.indicaRegiao(regiao);	
-			CatalogoAlojamentos cal = new CatalogoAlojamentos();
-			cal.addAlojamento(numeroPessoas, reg);
+			if (rd.nextBoolean()) {
+				String contacto = prop.getProperty("contactoVoluntario");
+				Voluntario vol = rah.identificaVoluntario(Integer.parseInt(contacto));	
+			}
+			String classAjuda = prop.getProperty("ajuda");
+			Class<?> ajuda = Class.forName(classAjuda);
+			
+			if (ajuda == migrantmatcher.domain.Alojamento.class) {
+				int numeroPessoas = Integer.parseInt(prop.getProperty("numeroPessoas"));
+				
+				List<Regiao> lr = rah.indicaNumeroPessoas(numeroPessoas); //ListaRegiao
+				String regiao = prop.getProperty("regiao");
+				Regiao reg = rah.indicaRegiao(regiao);	
+				CatalogoAlojamentos cal = new CatalogoAlojamentos();
+				cal.addAlojamento(numeroPessoas, reg);
+			}
+			else {
+				String descricao = prop.getProperty("descricao");
+				rah.indicaDescricaoItem(descricao);
+			}
+			
+			TelegramSMSSender smsSender = new TelegramSMSSender();
+			int codigo_unico = (rd.nextInt(999999) + 1);
+			String.format("%06d", codigo_unico);
+			smsSender.setNumber(new StringBuilder(codigo_unico).toString());
+			smsSender.send();
+			
+			int codigo_inserido = sc.nextInt(); // lê-se do ficheiro properties?
+			rah.confirmaAjuda(codigo_inserido, codigo_unico);
+			
+			sc.close();
+			
+		} catch (FileNotFoundException e) {
+			//Do nothing
+		} catch (ClassNotFoundException e) {
+			//Do nothing
 		}
-		else {
-			String descricao = sc.nextLine();
-			rah.indicaDescricaoItem(descricao);
-		}
 		
-		TelegramSMSSender smsSender = new TelegramSMSSender();
-		int codigo_unico = (rd.nextInt(999999) + 1);
-		String.format("%06d", codigo_unico);
-		smsSender.setNumber(new StringBuilder(codigo_unico).toString());
-		smsSender.send();
-		
-		int codigo_inserido = sc.nextInt();
-		rah.confirmaAjuda(codigo_inserido, codigo_unico);
-		
-		sc.close();
-	}
+	}	
 }
