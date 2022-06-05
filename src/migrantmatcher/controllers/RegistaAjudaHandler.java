@@ -20,14 +20,35 @@ public class RegistaAjudaHandler {
 		this.catVoluntarios = catVoluntarios;
 	}
 
+	/**
+	 * Devolve o voluntário com o contacto dado
+	 * @param contacto - contacto do voluntario a identificado
+	 * @ensures O {@code v}:Voluntário é registado com {@code v.contacto = contacto}
+	 * @return o voluntário com o contacto dado
+	 */
 	public Voluntario identificaVoluntario(int contacto) { // 1
 		return catVoluntarios.getVoluntario(contacto);
 	}
 
+	/**
+	 * 
+	 * @param numero
+	 * @requires
+	 * @ensures
+	 * @return
+	 */
 	public List<Regiao> indicaNumeroPessoas(int numero) {	
 		return lr.getListaRegioes();
 	}
 
+	/**
+	 * Devolve a regiao onde se encontra o alojamento a ser oferecido como ajuda pelo Voluntario.
+	 * @param nomeRegiao - nome da regiao onde se encontra o alojamento
+	 * @requires
+	 * @ensures
+	 * @return a regiao que tem {@code nomeRegiao} como nome 
+	 * @throws RegiaoNaoDisponivelException
+	 */
 	public Regiao indicaRegiao(String nomeRegiao) throws RegiaoNaoDisponivelException{
 		return lr.getListaRegioes()
 			.stream()
