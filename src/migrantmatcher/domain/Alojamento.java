@@ -1,6 +1,6 @@
 package migrantmatcher.domain;
 
-public class Alojamento {
+public class Alojamento extends Ajuda{
 
 	private Regiao regiao;
 	private int numeroPessoas;
