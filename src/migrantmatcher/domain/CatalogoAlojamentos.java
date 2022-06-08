@@ -3,11 +3,12 @@ package migrantmatcher.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CatalogoAlojamentos {
+public class CatalogoAlojamentos extends ListaAjudas{
 
-private List<Alojamento> cal = new ArrayList<>();
+	private List<Alojamento> catAloj = new ArrayList<>();
 	
 	public void addAlojamento(int numeroPessoas, Regiao regiao) {
-		cal.add(new Alojamento(numeroPessoas, regiao));
+		catAloj.add(new Alojamento(numeroPessoas, regiao));
 	}
+	
 }
