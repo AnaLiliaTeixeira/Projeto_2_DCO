@@ -1,6 +1,6 @@
 package migrantmatcher.domain;
 
-public class Migrante {
+public class Migrante extends CatalogoMigrantes{
 
 	private String nome;
 	private int contacto;
