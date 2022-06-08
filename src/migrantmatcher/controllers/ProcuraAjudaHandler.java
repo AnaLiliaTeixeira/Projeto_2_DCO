@@ -5,7 +5,6 @@ import java.util.List;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.CatalogoMigrantes;
 import migrantmatcher.domain.ListaAjudas;
-import migrantmatcher.domain.ListaMembros;
 import migrantmatcher.domain.ListaRegioes;
 import migrantmatcher.domain.Membro;
 import migrantmatcher.domain.Migrante;
@@ -15,7 +14,7 @@ public class ProcuraAjudaHandler {
 
 	private CatalogoMigrantes cm = new CatalogoMigrantes();
 	private ListaRegioes lr = new ListaRegioes();
-	private ListaMembros lm = new ListaMembros();
+	//private ListaMembros lm = new ListaMembros();
 
 	public void registaMigrante(String nome, int contacto) {
 		cm.addMigrante(new Migrante(nome, contacto));		
@@ -32,7 +31,7 @@ public class ProcuraAjudaHandler {
 	}
 	
 	public void indicaOutroMembro(String nome) {
-		lm.addOutroMembro(new Membro(nome));	
+		//lm.addOutroMembro(new Membro(nome));	
 	}
 
 	public List<Regiao> pedeListaRegioesPossiveis() {
