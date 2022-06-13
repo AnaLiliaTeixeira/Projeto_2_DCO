@@ -4,18 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Scanner;
 
 import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Familia;
 import migrantmatcher.domain.ListaAjudas;
-import migrantmatcher.domain.Membro;
 import migrantmatcher.domain.Regiao;
+import migrantmatcher.exceptions.AjudaNaoDefinidaException;
+import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
 public class Main {
 
@@ -23,9 +22,7 @@ public class Main {
 
 		ProcuraAjudaHandler handler = new ProcuraAjudaHandler();
 		Random rd = new Random();
-		//Scanner sc = new Scanner(System.in);
 		Properties prop = new Properties();
-
 
 		try {
 			prop.load(new FileInputStream(new File("prop_migrant.properties")));
@@ -53,9 +50,9 @@ public class Main {
 
 			List<Regiao> lr = handler.pedeListaRegioesPossiveis();
 			String regiao = prop.getProperty("regiao");
-			ListaAjudas la = handler.indicaRegiaoEscolhida(regiao);
+			List<Ajuda> la = handler.indicaRegiaoEscolhida(regiao, lr);
 			String ajuda = prop.getProperty("ajuda");
-			Ajuda a = handler.escolheAjuda(ajuda);
+			Ajuda a = handler.escolheAjuda(ajuda, la);
 			handler.confirmaPedidoAjuda();
 
 		} catch (FileNotFoundException e) {
@@ -63,6 +60,12 @@ public class Main {
 			e.printStackTrace();
 		} catch (IOException e) {
 			//Do nothing
+			e.printStackTrace();
+		} catch (RegiaoNaoDisponivelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AjudaNaoDefinidaException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
