@@ -8,15 +8,21 @@ public class Familia extends CatalogoMigrantes{
 	private int numero_pessoas;
 	private String cc_nome;
 	private int cc_contacto;
-	private List<String> outrosMembros = new ArrayList<>();
+	private List<Membro> outrosMembros = new ArrayList<>();
 	
-	public Familia (int numero_pessoas, String cc_nome, int cc_contacto) {
+	public Familia (int numero_pessoas) {
 		this.numero_pessoas = numero_pessoas;
-		this.cc_nome = cc_nome;
-		this.cc_contacto = cc_contacto;
 	}
 	
-	public void addMembro (String nome) {
-		outrosMembros.add(nome);
+	public void addMembro(Membro membro) {
+		outrosMembros.add(membro);
+	}
+
+	public void setCC_contacto(int cc_contacto) {
+		this.cc_contacto = cc_contacto;
+	}
+
+	public void setCC_nome(String cc_nome) {
+		this.cc_nome = cc_nome;
 	}
 }
