@@ -26,7 +26,7 @@ import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 public class Main {
 	public static void main(String[] args) throws RegiaoNaoDisponivelException, IOException {
 		
-		RegistaAjudaHandler rah = new MigrantMatcher().getRegistaAjudaHandler();
+		RegistaAjudaHandler handler = new MigrantMatcher().getRegistaAjudaHandler();
 		Random rd = new Random();
 		Scanner sc = new Scanner(System.in);
 		Properties prop = new Properties();
@@ -34,23 +34,19 @@ public class Main {
 		try {
 			prop.load(new FileInputStream(new File("prop_voluntario.properties")));
 			
-			if (rd.nextBoolean()) {
-				String contacto = prop.getProperty("contactoVoluntario");
-				Voluntario vol = rah.identificaVoluntario(Integer.parseInt(contacto));	
-			}
-			String classAjuda = prop.getProperty("ajuda");
+			int contacto = sc.nextInt();
+			Voluntario vol = handler.identificaVoluntario(contacto);	
+			String classAjuda = sc.nextLine();
 			Class<?> ajuda = Class.forName(classAjuda);
 			ListaAjudas la = new ListaAjudas();
-			
-			
+					
 			if (ajuda == migrantmatcher.domain.Alojamento.class) {
-				int numeroPessoas = Integer.parseInt(prop.getProperty("numeroPessoas"));
-				
-				List<Regiao> lr = rah.indicaNumeroPessoas(numeroPessoas); //ListaRegiao
-				String regiao = prop.getProperty("regiao");
-				Regiao reg = rah.indicaRegiao(regiao);	
+				int numeroPessoas = sc.nextInt();
+				List<Regiao> lr = handler.indicaNumeroPessoas(numeroPessoas); //ListaRegiao
+				String nomeRegiao = sc.nextLine();
+				Regiao regiao = handler.indicaRegiao(nomeRegiao);	
 				CatalogoAlojamentos cal = new CatalogoAlojamentos();
-				cal.addAlojamento(numeroPessoas, reg);
+				cal.addAlojamento(numeroPessoas, regiao);
 				
 				@SuppressWarnings("unchecked")
 				Constructor<Alojamento> construtor = (Constructor<Alojamento>) ajuda.getConstructor();
@@ -58,8 +54,8 @@ public class Main {
 				la.addAjuda(aloj);
 			}
 			else {
-				String descricao = prop.getProperty("descricao");
-				rah.indicaDescricaoItem(descricao);
+				String descricao = sc.nextLine();
+				handler.indicaDescricaoItem(descricao, vol);
 				
 				@SuppressWarnings("unchecked")
 				Constructor<Item> construtor = (Constructor<Item>) ajuda.getConstructor();
@@ -74,7 +70,7 @@ public class Main {
 			smsSender.send();
 			
 			int codigo_inserido = sc.nextInt(); // lê-se do ficheiro properties?
-			rah.confirmaAjuda(codigo_inserido, codigo_unico);
+			handler.confirmaAjuda(codigo_inserido, codigo_unico);
 			
 			sc.close();
 			
