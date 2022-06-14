@@ -1,13 +1,17 @@
 package migrantmatcher.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class CatalogoItens extends ListaAjudas{
+public class CatalogoItens extends ListaAjudas {
 
-	private List<Item> catItens = new ArrayList<>();
+	HashMap<Voluntario, List<Item>> catItens = new HashMap<>();
 	
-	public void addItem(String descricao) {
-		catItens.add(new Item(descricao));
+	public void addItem(String descricao, Voluntario vol) {
+		
+		List<Item> newList = catItens.get(vol);
+		newList.add(new Item(descricao));
+		catItens.put(vol, newList);
 	}
 }
