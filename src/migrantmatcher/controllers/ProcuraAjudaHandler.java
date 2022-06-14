@@ -2,6 +2,8 @@ package migrantmatcher.controllers;
 
 import java.util.List;
 
+import com.telegramsms.TelegramSMSSender;
+
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.CatalogoMigrantes;
 import migrantmatcher.domain.Familia;
@@ -67,8 +69,12 @@ public class ProcuraAjudaHandler {
 		throw new AjudaNaoDefinidaException();
 	}
 
-	public void confirmaPedidoAjuda() {
+	public void confirmaPedidoAjuda(List<Ajuda> ajudasNecessarias) {
 		// TODO Auto-generated method stub
+		TelegramSMSSender smsSender = new TelegramSMSSender();
+		for (Ajuda a : ajudasNecessarias) {
+			
+		}
 		
 	}
 
