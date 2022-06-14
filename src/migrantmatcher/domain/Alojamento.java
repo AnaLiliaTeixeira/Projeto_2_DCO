@@ -5,9 +5,6 @@ public class Alojamento extends Ajuda {
 	private Regiao regiao;
 	private int numeroPessoas;
 		
-	public Alojamento() {
-		super("Alojamento");
-	}
 	
 	public Alojamento(int numeroPessoas, Regiao regiao) {
 		this.numeroPessoas = numeroPessoas;
