@@ -57,8 +57,8 @@ public class RegistaAjudaHandler {
 			.orElseThrow();
 	}
 
-	public void indicaDescricaoItem(String descricao) {
-		catItens.addItem(descricao);
+	public void indicaDescricaoItem(String descricao, Voluntario vol) {
+		catItens.addItem(descricao, vol);
 	}
 
 	public void confirmaAjuda(int codigo_indicado, int codigo_unico) {
