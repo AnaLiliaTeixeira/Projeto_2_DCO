@@ -13,7 +13,9 @@ import java.util.Scanner;
 import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Familia;
+import migrantmatcher.domain.ListaAjudas;
 import migrantmatcher.domain.Regiao;
+import migrantmatcher.domain.Voluntario;
 import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
@@ -30,10 +32,19 @@ public class Main {
 		try {
 			prop.load(new FileInputStream(new File("prop_migrant.properties")));
 
-			if (rd.nextBoolean()) {
+//			String nome = sc.nextLine();
+//			int contacto = sc.nextInt();
+//			handler.registaMigrante(nome, contacto);
+			
+			String classRegisto = sc.nextLine();
+			Class<?> registo = Class.forName(classRegisto);
+			
+			if (registo == migrantmatcher.domain.Migrante.class) {
+				
 				String nome = sc.nextLine();
 				int contacto = sc.nextInt();
 				handler.registaMigrante(nome, contacto);
+				
 			}
 			else {
 				int numeroPessoas = sc.nextInt();
@@ -46,7 +57,7 @@ public class Main {
 				while((nomeOutroMembro = sc.nextLine()) != null) {
 					handler.indicaOutroMembro(f, nomeOutroMembro);
 					
-				} // duvida de como ler todas as linhas nomeOutroMembro do file properties
+				}
 				
 				handler.registaFamilia(f);
 			}
@@ -54,10 +65,9 @@ public class Main {
 			List<Regiao> lr = handler.pedeListaRegioesPossiveis();
 			String regiao = sc.nextLine();
 			List<Ajuda> la = handler.indicaRegiaoEscolhida(regiao, lr);
-			boolean migranteNecessita = true; // verificar quando o migrante necessita
 			List<Ajuda> ajudasNecessarias = new ArrayList<>();
-			while (migranteNecessita) {
-				String ajuda = sc.nextLine();
+			String ajuda;
+			while ((ajuda = sc.nextLine()) != null) {
 				Ajuda a = handler.escolheAjuda(ajuda, la);
 				ajudasNecessarias.add(a);
 			}
@@ -74,6 +84,8 @@ public class Main {
 			e.printStackTrace();
 		} catch (AjudaNaoDefinidaException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
