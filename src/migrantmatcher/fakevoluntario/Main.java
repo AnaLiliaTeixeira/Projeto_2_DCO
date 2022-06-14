@@ -46,7 +46,7 @@ public class Main {
 				String nomeRegiao = sc.nextLine();
 				Regiao regiao = handler.indicaRegiao(nomeRegiao);	
 				CatalogoAlojamentos cal = new CatalogoAlojamentos();
-				cal.addAlojamento(numeroPessoas, regiao);
+				cal.addAlojamento(numeroPessoas, regiao, vol);
 				
 				@SuppressWarnings("unchecked")
 				Constructor<Alojamento> construtor = (Constructor<Alojamento>) ajuda.getConstructor();
