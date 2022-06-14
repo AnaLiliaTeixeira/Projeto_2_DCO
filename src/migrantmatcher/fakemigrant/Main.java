@@ -4,43 +4,46 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Scanner;
 
 import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Familia;
-import migrantmatcher.domain.ListaAjudas;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
 public class Main {
 
+
 	public static void main(String[] args) {
 
 		ProcuraAjudaHandler handler = new ProcuraAjudaHandler();
 		Random rd = new Random();
+		Scanner sc = new Scanner(System.in);
 		Properties prop = new Properties();
 
 		try {
 			prop.load(new FileInputStream(new File("prop_migrant.properties")));
 
 			if (rd.nextBoolean()) {
-				String nome = prop.getProperty("nomeMigrante");
-				int contacto = Integer.parseInt(prop.getProperty("contactoMigrante"));
+				String nome = sc.nextLine();
+				int contacto = sc.nextInt();
 				handler.registaMigrante(nome, contacto);
 			}
 			else {
-				int numeroPessoas = Integer.parseInt(prop.getProperty("numeroPessoas"));
+				int numeroPessoas = sc.nextInt();
 				Familia f = new Familia(numeroPessoas);
-				String nomeCC = prop.getProperty("nomeCC");
-				int contactoCC = Integer.parseInt(prop.getProperty("contactoCC"));
+				String nomeCC = sc.nextLine();
+				int contactoCC = sc.nextInt();
 				handler.indicaDadosCasal(f, nomeCC, contactoCC);
 				String nomeOutroMembro;
 				
-				while((nomeOutroMembro = prop.getProperty("nomeOutroMembro")) != null) {
+				while((nomeOutroMembro = sc.nextLine()) != null) {
 					handler.indicaOutroMembro(f, nomeOutroMembro);
 					
 				} // duvida de como ler todas as linhas nomeOutroMembro do file properties
@@ -49,11 +52,16 @@ public class Main {
 			}
 
 			List<Regiao> lr = handler.pedeListaRegioesPossiveis();
-			String regiao = prop.getProperty("regiao");
+			String regiao = sc.nextLine();
 			List<Ajuda> la = handler.indicaRegiaoEscolhida(regiao, lr);
-			String ajuda = prop.getProperty("ajuda");
-			Ajuda a = handler.escolheAjuda(ajuda, la);
-			handler.confirmaPedidoAjuda();
+			boolean migranteNecessita = true; // verificar quando o migrante necessita
+			List<Ajuda> ajudasNecessarias = new ArrayList<>();
+			while (migranteNecessita) {
+				String ajuda = sc.nextLine();
+				Ajuda a = handler.escolheAjuda(ajuda, la);
+				ajudasNecessarias.add(a);
+			}
+			handler.confirmaPedidoAjuda(ajudasNecessarias);
 
 		} catch (FileNotFoundException e) {
 			//Do nothing
