@@ -11,4 +11,9 @@ public class Regiao {
 	public String getRegiao() {
 		return this.nome;
 	}
+	
+	public boolean equals(Object other) {
+		return this == other || (other instanceof Regiao)
+				&& this.nome.equals(((Regiao)other).nome);
+	}
 }
