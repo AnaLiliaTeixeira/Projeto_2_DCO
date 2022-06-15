@@ -42,20 +42,19 @@ public class Main {
 					
 			if (ajuda == migrantmatcher.domain.Alojamento.class) {
 				int numeroPessoas = sc.nextInt();
-				List<Regiao> lr = handler.indicaNumeroPessoas(numeroPessoas); //ListaRegiao
+				List<Regiao> lr = handler.indicaNumeroPessoas(numeroPessoas);
 				String nomeRegiao = sc.nextLine();
-				Regiao regiao = handler.indicaRegiao(nomeRegiao);	
-				CatalogoAlojamentos cal = new CatalogoAlojamentos();
-				cal.addAlojamento(numeroPessoas, regiao, vol);
+				Alojamento aloj = new Alojamento(numeroPessoas, vol);
+				handler.indicaRegiao(nomeRegiao, lr, aloj);	
 				
 				@SuppressWarnings("unchecked")
 				Constructor<Alojamento> construtor = (Constructor<Alojamento>) ajuda.getConstructor();
-				Alojamento aloj = construtor.newInstance();
-				la.addAjuda(aloj);
+				Alojamento aloja = construtor.newInstance();
+				la.addAjuda(aloja);
 			}
 			else {
 				String descricao = sc.nextLine();
-				handler.indicaDescricaoItem(descricao, vol);
+				handler.indicaDescricaoItem(new Item(descricao, vol));
 				
 				@SuppressWarnings("unchecked")
 				Constructor<Item> construtor = (Constructor<Item>) ajuda.getConstructor();
