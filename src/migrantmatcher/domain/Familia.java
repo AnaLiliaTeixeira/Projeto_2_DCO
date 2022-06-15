@@ -25,4 +25,16 @@ public class Familia extends CatalogoMigrantes{
 	public void setCC_nome(String cc_nome) {
 		this.cc_nome = cc_nome;
 	}
+
+	public int getNumero_pessoas() {
+		return numero_pessoas;
+	}
+
+	public String getCC_nome() {
+		return cc_nome;
+	}
+
+	public int getCC_contacto() {
+		return cc_contacto;
+	}
 }
