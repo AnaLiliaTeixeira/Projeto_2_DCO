@@ -8,10 +8,6 @@ public class CatalogoVoluntarios {
 	
 	private List<Voluntario> catVoluntarios = new ArrayList<>();
 	
-	public void addVoluntario(Voluntario v) {
-		catVoluntarios.add(v);
-	}
-	
 	public Voluntario getVoluntario(int contacto) {
 		for (Voluntario v : catVoluntarios) {
 			if (v.getContacto() == contacto) {
@@ -19,7 +15,7 @@ public class CatalogoVoluntarios {
 			}
 		}
 		Voluntario newVoluntario = new Voluntario(contacto);
-		addVoluntario(newVoluntario);
+		catVoluntarios.add(newVoluntario);
 		return newVoluntario;
 	}
 }
