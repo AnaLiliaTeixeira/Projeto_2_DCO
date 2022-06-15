@@ -2,22 +2,27 @@ package migrantmatcher.controllers;
 
 import java.util.List;
 
+import migrantmatcher.domain.Alojamento;
 import migrantmatcher.domain.CatalogoAlojamentos;
 import migrantmatcher.domain.CatalogoItens;
 import migrantmatcher.domain.CatalogoVoluntarios;
+import migrantmatcher.domain.Item;
 import migrantmatcher.domain.ListaRegioes;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.domain.Voluntario;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
 public class RegistaAjudaHandler {
+	
 	private CatalogoVoluntarios catVoluntarios;
-	private ListaRegioes lr;
-	private CatalogoAlojamentos cal;
+	private ListaRegioes lr = new ListaRegioes();
+	private CatalogoAlojamentos catAloj;
 	private CatalogoItens catItens;
 	
-	public RegistaAjudaHandler(CatalogoVoluntarios catVoluntarios) {
+	public RegistaAjudaHandler(CatalogoVoluntarios catVoluntarios, CatalogoItens catItens, CatalogoAlojamentos catAloj) {
 		this.catVoluntarios = catVoluntarios;
+		this.catItens = catItens;
+		this.catAloj = catAloj;
 	}
 
 	/**
@@ -49,16 +54,23 @@ public class RegistaAjudaHandler {
 	 * @return a regiao que tem {@code nomeRegiao} como nome 
 	 * @throws RegiaoNaoDisponivelException
 	 */
-	public Regiao indicaRegiao(String nomeRegiao) throws RegiaoNaoDisponivelException{
-		return lr.getListaRegioes()
-			.stream()
-			.filter(regiao -> regiao.getRegiao().equals(nomeRegiao))
-			.findFirst()
-			.orElseThrow();
+	public void indicaRegiao(String nomeRegiao, List<Regiao> listaRegioes, Alojamento aloj) throws RegiaoNaoDisponivelException{
+			
+		boolean existeRegiao = false;
+		
+		for (Regiao regiao : listaRegioes) {
+			if (regiao.getRegiao().equals(nomeRegiao)) {
+				aloj.setRegiao(regiao);
+				catAloj.addAlojamento(aloj);
+				existeRegiao = true;
+			}
+		}
+		if (!existeRegiao) throw new RegiaoNaoDisponivelException();
+		
 	}
 
-	public void indicaDescricaoItem(String descricao, Voluntario vol) {
-		catItens.addItem(descricao, vol);
+	public void indicaDescricaoItem(Item item) {
+		catItens.addItem(item);
 	}
 
 	public void confirmaAjuda(int codigo_indicado, int codigo_unico) {
@@ -66,4 +78,18 @@ public class RegistaAjudaHandler {
 			//TODO
 		}
 	}
+	
+	public CatalogoVoluntarios getCatalogoVoluntarios() {
+		return this.catVoluntarios;
+	}
+	
+	public CatalogoItens getCatalogoItens() {
+		return this.catItens;
+	}
+	
+	public CatalogoAlojamentos getCatalogoAlojamentos() {
+		return this.catAloj;
+	}
+
+
 }
