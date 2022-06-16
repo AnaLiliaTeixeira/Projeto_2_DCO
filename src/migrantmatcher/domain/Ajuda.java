@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 public class Ajuda {
 
 	private String nome;
-	private LocalDateTime getCreatedTime;
+	protected LocalDateTime getCreatedTime;
+	protected Voluntario voluntario;	
 	
 	public Ajuda(String ajuda) {
 		this.nome = ajuda;
@@ -22,5 +23,9 @@ public class Ajuda {
 
 	public LocalDateTime getCreatedTime() {
 		return getCreatedTime;
+	}
+	
+	public Voluntario getVoluntario() {
+		return voluntario;
 	}
 }
