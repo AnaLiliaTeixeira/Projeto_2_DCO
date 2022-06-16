@@ -3,7 +3,7 @@ package migrantmatcher.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CatalogoItens extends ListaAjudas {
+public class CatalogoItens {
 
 	List<Item> catItens = new ArrayList<>();
 		
@@ -11,7 +11,7 @@ public class CatalogoItens extends ListaAjudas {
 		catItens.add(item);
 	}
 	
-	public List<Item> getCatalogoItens() {
+	public List<Item> getListaItens() {
 		return this.catItens;
 	}
 }
