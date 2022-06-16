@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Ajuda {
 
-	private String nome;
+	protected String nome;
 	protected LocalDateTime getCreatedTime;
 	protected Voluntario voluntario;	
 	
