@@ -3,31 +3,39 @@ package migrantmatcher.tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import migrantmatcher.MigrantMatcher;
-import migrantmatcher.domain.CatalogoAlojamentos;
+import migrantmatcher.controllers.ProcuraAjudaHandler;
+import migrantmatcher.controllers.RegistaAjudaHandler;
+import migrantmatcher.domain.Ajuda;
+import migrantmatcher.domain.Alojamento;
 import migrantmatcher.domain.Item;
+import migrantmatcher.domain.Migrante;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.domain.Voluntario;
+import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
+import migrantmatcher.strategies.OrdenaAjudasPorDataDeDisponibilizacao;
 
 class UC1_Test {
 
+    private MigrantMatcher migMatcher = new MigrantMatcher();
+    private RegistaAjudaHandler registaHandler = migMatcher.getRegistaAjudaHandler();
+	
 	/**
 	 * Verifica se um voluntario foi identificado corretamente.
 	 */
 	@Test
 	void testVoluntarioIdentificado() {
 
-		MigrantMatcher migMatcher = new MigrantMatcher();
 		int contacto = 123456789;
-		Voluntario vol = migMatcher.getRegistaAjudaHandler().identificaVoluntario(contacto);
+		Voluntario vol = registaHandler.identificaVoluntario(contacto);
 
-		assertEquals(vol, migMatcher.getRegistaAjudaHandler()
-				.getCatalogoVoluntarios().getVoluntario(contacto));
+		assertEquals(vol, migMatcher.getCatalogoVoluntarios().getVoluntario(contacto));
 
 	}
 
@@ -38,60 +46,87 @@ class UC1_Test {
 	@Test
 	void testRegiaoNaoDisponivel() {
 
-		MigrantMatcher migMatcher = new MigrantMatcher();
-
-		List<Regiao> lr = migMatcher.getRegistaAjudaHandler().indicaNumeroPessoas(3);
+		int contacto = 123456789;
+		Voluntario vol = registaHandler.identificaVoluntario(contacto);
+		int numeroPessoas = 3;
+		List<Regiao> lr = registaHandler.indicaNumeroPessoas(numeroPessoas);
 
 		assertThrows(RegiaoNaoDisponivelException.class, () -> {
-			migMatcher.getRegistaAjudaHandler().indicaRegiao("SUL", lr);
+			registaHandler.indicaRegiao("SUL", lr, numeroPessoas, vol);
 		});
 	}
 
 	/**
-	 * Testa se o Voluntario e o respetivo item oferecido foram colocados
+	 * Testa se os Voluntarios e os respetivos itens oferecidos foram colocados
 	 * no catálogo de itens.
 	 */
 	@Test
 	void testOferecerItem() {		
 
-		MigrantMatcher migMatcher = new MigrantMatcher();
+		int contacto1 = 123456789;
+		int contacto2 = 457667789;
+		
+		Voluntario vol1 = registaHandler.identificaVoluntario(contacto1);
+		Voluntario vol2 = registaHandler.identificaVoluntario(contacto2);
 
-		Voluntario vol1 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123456789);
-		Voluntario vol2 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123345345);
-		Voluntario vol3 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(457667789);
+		Item item1 = registaHandler.indicaDescricaoItem("banana", vol1);
+		Item item2 = registaHandler.indicaDescricaoItem("coentros", vol2);
+		Item item3 = registaHandler.indicaDescricaoItem("pao", vol1);
 
-		Item item1 = new Item("banana", vol1);
-		Item item2 = new Item("pao", vol1);
-		Item item3 = new Item("coentros", vol2);
-		Item item4 = new Item("gelado",vol3);
-		Item item5 = new Item("morangos", vol1);
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().contains(item1)); //Verifica se o item está no catálogo de itens
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().contains(item2)); //Verifica se o item está no catálogo de itens
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().contains(item3)); //Verifica se o item está no catálogo de itens
 
-		migMatcher.getCatalogoItens().addItem(item1);
-		migMatcher.getCatalogoItens().addItem(item2);
-		migMatcher.getCatalogoItens().addItem(item3);
-		migMatcher.getCatalogoItens().addItem(item4);
-		migMatcher.getCatalogoItens().addItem(item5);
-
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().contains(item1)); //Verifica se o item está no catálogo de itens
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().contains(item2)); //Verifica se o item está no catálogo de itens
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().contains(item3)); //Verifica se o item está no catálogo de itens
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().contains(item4)); //Verifica se o item está no catálogo de itens
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().contains(item5)); //Verifica se o item está no catálogo de itens
-
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().get(0).getVoluntario().getContacto() == 123456789); //Verifica se o item pertence ao respetivo voluntário
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().get(1).getVoluntario().getContacto() == 123456789); //Verifica se o item pertence ao respetivo voluntário
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().get(2).getVoluntario().getContacto() == 123345345); //Verifica se o item pertence ao respetivo voluntário
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().get(3).getVoluntario().getContacto() == 457667789); //Verifica se o item pertence ao respetivo voluntário
-		assertEquals(true, migMatcher.getCatalogoItens().getCatalogoItens().get(4).getVoluntario().getContacto() == 123456789); //Verifica se o item pertence ao respetivo voluntário
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().get(0).getVoluntario().getContacto() == contacto1); //Verifica se o item pertence ao respetivo voluntário
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().get(1).getVoluntario().getContacto() == contacto2); //Verifica se o item pertence ao respetivo voluntário
+		assertEquals(true, migMatcher.getCatalogoItens().getListaItens().get(2).getVoluntario().getContacto() == contacto1); //Verifica se o item pertence ao respetivo voluntário
 	}
 
+	/**
+	 * Testa se os Voluntarios e os respetivos alojamentos oferecidos foram colocados
+	 * no catálogo de alojamentos.
+	 */
 	@Test
 	void testOferecerAlojamento() throws RegiaoNaoDisponivelException {
 
-		MigrantMatcher migMatcher = new MigrantMatcher();
-		Voluntario vol = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123456789);
-		List<Regiao> lr = migMatcher.getRegistaAjudaHandler().indicaNumeroPessoas(3);
-		//Regiao r = migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr);
-		CatalogoAlojamentos cal = new CatalogoAlojamentos();
+		int contacto = 123456789;
+		Voluntario vol = registaHandler.identificaVoluntario(contacto);
+		int numeroPessoas = 5;
+		List<Regiao> lr = registaHandler.indicaNumeroPessoas(numeroPessoas);
+		Alojamento aloj = migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, numeroPessoas, vol);
+		
+		assertEquals(true, migMatcher.getCatalogoAlojamentos().getListaAlojamentos().contains(aloj));
+		assertEquals(true, migMatcher.getCatalogoAlojamentos().getListaAlojamentos().get(0).getVoluntario().getContacto() == contacto);
+
 	}
+	
+
+	
+	
+//	@Test
+//	void testListaAjudasOrdenadaPorDataDisponibilidade() throws RegiaoNaoDisponivelException {
+//		
+//		MigrantMatcher migMatcher = new MigrantMatcher();
+//		
+//		Voluntario vol1 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(1234);
+//		Voluntario vol2 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(12345);
+//		Voluntario vol3 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123456);
+//		
+//		List<Regiao> lr = migMatcher.getRegistaAjudaHandler().indicaNumeroPessoas(3);
+//		
+//		Alojamento aloj1 = new Alojamento(3, vol1);
+//		Alojamento aloj2 = new Alojamento(4, vol2);
+//		Alojamento aloj3 = new Alojamento(7, vol1);
+//		Alojamento aloj4 = new Alojamento(7, vol3);
+//		
+//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj1);
+//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj2);
+//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj3);
+//		migMatcher.getRegistaAjudaHandler().indicaRegiao("NORTE", lr, aloj4);
+//		
+//		migMatcher.getRegistaAjudaHandler().indicaDescricaoItem(new Item("banana", vol3));
+//		
+//		//List<Ajuda> la = migMatcher.getProcuraAjudaHandler().indicaRegiaoEscolhida("CENTRO", lr, strat);
+//		
+//	}
 }
