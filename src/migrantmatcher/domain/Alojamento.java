@@ -10,6 +10,7 @@ public class Alojamento extends Ajuda {
 	private LocalDateTime createdTime;
 	
 	public Alojamento(int numeroPessoas, Regiao regiao, Voluntario voluntario) {
+		this.nome = "Alojamento";
 		this.numeroPessoas = numeroPessoas;
 		this.regiao = regiao;
 		this.voluntario = voluntario;
