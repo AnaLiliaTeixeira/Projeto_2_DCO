@@ -1,17 +1,17 @@
 package migrantmatcher.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CatalogoAlojamentos extends ListaAjudas{
+public class CatalogoAlojamentos {
 
-	private List<Alojamento> catAloj;
+	private List<Alojamento> catAloj = new ArrayList<>();
 	
 	public void addAlojamento(Alojamento aloj) {
 		catAloj.add(aloj);
 	}
 	
-	public List<Alojamento> getCatalogoAlojamentos() {
+	public List<Alojamento> getListaAlojamentos() {
 		return catAloj;
-	}
-	
+	}	
 }
