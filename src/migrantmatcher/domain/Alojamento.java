@@ -9,8 +9,9 @@ public class Alojamento extends Ajuda {
 	private Voluntario voluntario;	
 	private LocalDateTime createdTime;
 	
-	public Alojamento(int numeroPessoas, Voluntario voluntario) {
+	public Alojamento(int numeroPessoas, Regiao regiao, Voluntario voluntario) {
 		this.numeroPessoas = numeroPessoas;
+		this.regiao = regiao;
 		this.voluntario = voluntario;
 		this.createdTime = LocalDateTime.now();
 	}
@@ -30,8 +31,5 @@ public class Alojamento extends Ajuda {
 	public LocalDateTime getCreatedTime() {
 		return createdTime;
 	}
-	
-	public void setRegiao(Regiao regiao) {
-		this.regiao = regiao;
-	}
+
 }
