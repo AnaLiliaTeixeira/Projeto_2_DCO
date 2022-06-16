@@ -12,17 +12,18 @@ import migrantmatcher.domain.Regiao;
 import migrantmatcher.domain.Voluntario;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
 
-public class RegistaAjudaHandler {
+public class RegistaAjudaHandler extends Handler {
 	
 	private CatalogoVoluntarios catVoluntarios;
-	private ListaRegioes lr = new ListaRegioes();
 	private CatalogoAlojamentos catAloj;
 	private CatalogoItens catItens;
+	private ListaRegioes lr;
 	
-	public RegistaAjudaHandler(CatalogoVoluntarios catVoluntarios, CatalogoItens catItens, CatalogoAlojamentos catAloj) {
+	public RegistaAjudaHandler(CatalogoVoluntarios catVoluntarios, CatalogoItens catItens, CatalogoAlojamentos catAloj, ListaRegioes lr) {
 		this.catVoluntarios = catVoluntarios;
 		this.catItens = catItens;
 		this.catAloj = catAloj;
+		this.lr = lr;
 	}
 
 	/**
@@ -31,7 +32,7 @@ public class RegistaAjudaHandler {
 	 * @ensures O {@code v}:Voluntário é registado com {@code v.contacto = contacto}
 	 * @return o voluntário com o contacto dado
 	 */
-	public Voluntario identificaVoluntario(int contacto) { // 1
+	public Voluntario identificaVoluntario(int contacto) {
 		return catVoluntarios.getVoluntario(contacto);
 	}
 
@@ -54,23 +55,21 @@ public class RegistaAjudaHandler {
 	 * @return a regiao que tem {@code nomeRegiao} como nome 
 	 * @throws RegiaoNaoDisponivelException
 	 */
-	public void indicaRegiao(String nomeRegiao, List<Regiao> listaRegioes, Alojamento aloj) throws RegiaoNaoDisponivelException{
-			
-		boolean existeRegiao = false;
-		
+	public Alojamento indicaRegiao(String nomeRegiao, List<Regiao> listaRegioes, int numeroPessoas, Voluntario vol) throws RegiaoNaoDisponivelException{					
 		for (Regiao regiao : listaRegioes) {
 			if (regiao.getRegiao().equals(nomeRegiao)) {
-				aloj.setRegiao(regiao);
+				Alojamento aloj = new Alojamento(numeroPessoas, regiao, vol);
 				catAloj.addAlojamento(aloj);
-				existeRegiao = true;
+				return aloj;
 			}
 		}
-		if (!existeRegiao) throw new RegiaoNaoDisponivelException();
-		
+		throw new RegiaoNaoDisponivelException();
 	}
 
-	public void indicaDescricaoItem(Item item) {
+	public Item indicaDescricaoItem(String descricao, Voluntario vol) {
+		Item item = new Item(descricao, vol);
 		catItens.addItem(item);
+		return item;
 	}
 
 	public void confirmaAjuda(int codigo_indicado, int codigo_unico) {
@@ -79,17 +78,7 @@ public class RegistaAjudaHandler {
 		}
 	}
 	
-	public CatalogoVoluntarios getCatalogoVoluntarios() {
-		return this.catVoluntarios;
-	}
-	
-	public CatalogoItens getCatalogoItens() {
-		return this.catItens;
-	}
-	
-	public CatalogoAlojamentos getCatalogoAlojamentos() {
-		return this.catAloj;
-	}
+
 
 
 }
