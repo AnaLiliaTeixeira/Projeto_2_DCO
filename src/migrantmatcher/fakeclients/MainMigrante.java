@@ -15,6 +15,7 @@ import migrantmatcher.MigrantMatcher;
 import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Familia;
+import migrantmatcher.domain.PessoaMigrante;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
@@ -34,46 +35,47 @@ public class MainMigrante {
 		try {
 			prop.load(new FileInputStream(new File("defaults.properties")));
 			
-			System.out.println("Deseja fazer um registo individual ou familiar? (Opções de resposta Individual | Familiar)");
+			System.out.print("Deseja fazer um registo individual ou familiar? (Individual | Familiar):");
 			String registo = sc.nextLine();
+			PessoaMigrante pm;
 			
 			if (registo.equals("Individual")) {
 				
-				System.out.println("Insira o seu nome: ");
+				System.out.print("Insira o seu nome: ");
 				String nome = sc.nextLine();
-				System.out.println("Insira o seu contacto: ");
+				System.out.print("Insira o seu contacto: ");
 				int contacto = Integer.parseInt(sc.nextLine());
-				handler.registaMigrante(nome, contacto);
+				pm = handler.registaMigrante(nome, contacto);
 				
 			}
 			else {
-				System.out.println("Indique o número de pessoas: ");
+				System.out.print("Indique o número de pessoas: ");
 				int numeroPessoas = Integer.parseInt(sc.nextLine());
 				Familia f = new Familia(numeroPessoas);
-				System.out.println("Indique o nome do cabeça de casal: ");
+				System.out.print("Indique o nome do cabeça de casal: ");
 				String nomeCC = sc.nextLine();
-				System.out.println("Indique o contacto do cabeça de casal: ");
+				System.out.print("Indique o contacto do cabeça de casal: ");
 				int contactoCC = Integer.parseInt(sc.nextLine());
 				handler.indicaDadosCasal(f, nomeCC, contactoCC);
 				boolean continuar = true;
 				
 				while (continuar) {
 					
-					System.out.println("Indique o nome do outro membro: ");
+					System.out.print("Indique o nome do outro membro: ");
 					String nomeOutroMembro = sc.nextLine();
 					handler.indicaOutroMembro(f, nomeOutroMembro);
-					System.out.println("\n Deseja continuar? (S | N): ");
+					System.out.print("\n Deseja continuar? (S | N): ");
 					
 					if (sc.nextLine().equals("N")) {
 						continuar = false;
 					}
 				}
 				
-				handler.registaFamilia(f);
+				pm = handler.registaFamilia(f);
 			}
 
 			List<Regiao> lr = handler.pedeListaRegioesPossiveis();
-			System.out.println("Indique a região para onde se pretende mover: ");
+			System.out.print("Indique a região para onde se pretende mover: ");
 			String regiao = sc.nextLine();
 
 			String className = prop.getProperty("strategy");
@@ -88,19 +90,19 @@ public class MainMigrante {
 					
 					while (continuar) {
 						
-						System.out.println("Indique a ajuda que necessita: ");
+						System.out.print("Indique a ajuda que necessita: ");
 						String nomeAjuda = sc.nextLine();
 						Ajuda ajuda = handler.escolheAjuda(nomeAjuda, ajudasPossiveis);
 						ajudasPedidas.add(ajuda);
 						
-						System.out.println("\n Deseja pedir mais ajudas? (S | N): ");
+						System.out.print("\n Deseja pedir mais ajudas? (S | N): ");
 						
 						if (sc.nextLine().equals("N")) {
 							continuar = false;
 						}
 						
 					}
-					handler.confirmaPedidoAjuda(ajudasPedidas);
+					handler.confirmaPedidoAjuda(ajudasPedidas, pm);
 					
 				} catch (RegiaoNaoDisponivelException | AjudaNaoDefinidaException e) {
 					// TODO Auto-generated catch block
