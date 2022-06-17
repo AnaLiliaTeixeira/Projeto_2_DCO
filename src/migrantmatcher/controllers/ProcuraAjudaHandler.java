@@ -12,6 +12,7 @@ import migrantmatcher.domain.Familia;
 import migrantmatcher.domain.ListaRegioes;
 import migrantmatcher.domain.Membro;
 import migrantmatcher.domain.Migrante;
+import migrantmatcher.domain.PessoaMigrante;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
@@ -23,21 +24,7 @@ public class ProcuraAjudaHandler extends Handler {
 	private CatalogoAlojamentos cal;
 	private CatalogoItens ci;
 	private ListaRegioes lr;
-	
-//	private static ProcuraAjudaHandler INSTANCE = new ProcuraAjudaHandler();
-//
-//	public static ProcuraAjudaHandler getInstance() {
-//		return INSTANCE;
-//	}
-//	
-//	protected ProcuraAjudaHandler() {
-//		
-//	}
-//	
-//	public ProcuraAjudaHandler() {
-//		
-//	}
-	
+		
 	public ProcuraAjudaHandler(CatalogoMigrantes catMigrantes, CatalogoItens catItens, CatalogoAlojamentos catAloj, ListaRegioes lr) {
 		this.cm = catMigrantes;
 		this.ci = catItens;
@@ -45,14 +32,15 @@ public class ProcuraAjudaHandler extends Handler {
 		this.lr = lr;
 	}
 
-	public Migrante registaMigrante(String nome, int contacto) {
+	public PessoaMigrante registaMigrante(String nome, int contacto) {
 		Migrante mig = new Migrante(nome, contacto);
 		cm.addMigrante(mig);	
 		return mig;
 	}
 
-	public void registaFamilia(Familia f) {	
-		cm.addFamilia(f);		
+	public PessoaMigrante registaFamilia(Familia f) {	
+		cm.addFamilia(f);
+		return f;
 	}
 	
 	public void indicaDadosCasal(Familia f, String nome, int contacto) {
@@ -85,8 +73,9 @@ public class ProcuraAjudaHandler extends Handler {
 		throw new AjudaNaoDefinidaException();
 	}
 
-	public void confirmaPedidoAjuda(List<Ajuda> ajudasPedidas) {
+	public void confirmaPedidoAjuda(List<Ajuda> ajudasPedidas, PessoaMigrante pm) {
 		
+		pm.setListaAjudasPretendidas(ajudasPedidas);
 		PidgeonSMSSender smsSender = new PidgeonSMSSender();
 		ajudasPedidas.stream()
 		.forEach(a -> smsSender.send(Integer.toString(a.getVoluntario().getContacto()), "Nova ajuda pretendida"));
