@@ -12,7 +12,9 @@ import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.controllers.RegistaAjudaHandler;
 import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Alojamento;
+import migrantmatcher.domain.Familia;
 import migrantmatcher.domain.Item;
+import migrantmatcher.domain.PessoaMigrante;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.domain.Voluntario;
 import migrantmatcher.exceptions.AjudaNaoDefinidaException;
@@ -64,33 +66,74 @@ class UC2_Test {
 
 		assertEquals(listaAjudasExpected, listaAjudas);
 	}
+	
+	/**
+	 * Verifica se um migrante foi registado corretamente
+	 */
+	@Test
+	void testMigranteRegistado() {
+		
+		PessoaMigrante mig = procuraHandler.registaMigrante("Migrante", 1234);	
+		assertEquals(true, migMatcher.getCatalogoMigrantes().getCatMigrantes().contains(mig));
+	}
+	
+	/**
+	 * Verifica se uma familia foi registada corretamente
+	 */
+	@Test
+	void testFamiliaRegistada() {
+		Familia fam = new Familia(3);
+		procuraHandler.registaFamilia(fam);
+		procuraHandler.indicaDadosCasal(fam, "cc", 12345);
+		procuraHandler.indicaOutroMembro(fam, "membro1");
+		procuraHandler.indicaOutroMembro(fam, "membro2");
+		
+		assertEquals(true, migMatcher.getCatalogoMigrantes().getCatMigrantes().contains(fam));
+	}
+	
+	/**
+	 * Verifica se a o pedido de ajuda foi corretamente concluído.
+	 * 
+	 * @throws RegiaoNaoDisponivelException
+	 * @throws AjudaNaoDefinidaException
+	 */
+	@Test
+	void testAjudaConfirmada() throws RegiaoNaoDisponivelException, AjudaNaoDefinidaException {
+				
+		int contacto1 = 123456789;
+		int contacto2 = 457667789;
+		int contacto3 = 563828910;
+		int contacto4 = 982517848;
+		
+		int numeroPessoas1 = 5;
+		int numeroPessoas2 = 3;
+		
+		Voluntario vol1 = registaHandler.identificaVoluntario(contacto1);
+		Voluntario vol2 = registaHandler.identificaVoluntario(contacto2);
+		Voluntario vol3 = registaHandler.identificaVoluntario(contacto3);
+		
+		List<Regiao> lr = procuraHandler.pedeListaRegioesPossiveis();
+		
+		registaHandler.indicaDescricaoItem("banana", vol1);
+		registaHandler.indicaRegiao("CENTRO", lr, numeroPessoas1, vol1);
+		registaHandler.indicaDescricaoItem("coentros", vol2);
+		registaHandler.indicaRegiao("REGIÃO_AUTÓNOMA_DOS_AÇORES", lr, numeroPessoas2, vol3);
+		registaHandler.indicaDescricaoItem("pao", vol1);
+		
+		PessoaMigrante pm = procuraHandler.registaMigrante("Migrante1", contacto4);
+		
+		String nomeRegiao = "CENTRO";
+		List<Ajuda> listaAjudas = procuraHandler.indicaRegiaoEscolhida(nomeRegiao, lr, new OrdenaAjudasPorDataDeDisponibilizacao());
+		List<Ajuda> ajudasEscolhidas = new ArrayList<>();
+		
+		Ajuda ajuda1 = procuraHandler.escolheAjuda("Item", listaAjudas);
+		ajudasEscolhidas.add(ajuda1);
+		Ajuda ajuda2 = procuraHandler.escolheAjuda("Alojamento", listaAjudas);
+		ajudasEscolhidas.add(ajuda2);
+		
+		procuraHandler.confirmaPedidoAjuda(ajudasEscolhidas, pm);
+		
+		assertEquals(ajudasEscolhidas, pm.getListaAjudasPretendidas());
+	}
     
-    
-//	@Test
-//	void testListaAjudasOrdenadaPorDataDisponibilidade() throws RegiaoNaoDisponivelException {
-//		
-//		MigrantMatcher migMatcher = new MigrantMatcher();
-//		
-//		Voluntario vol1 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(1234);
-//		Voluntario vol2 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(12345);
-//		Voluntario vol3 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123456);
-//		
-//		List<Regiao> lr = migMatcher.getRegistaAjudaHandler().indicaNumeroPessoas(3);
-//		
-//		Alojamento aloj1 = new Alojamento(3, vol1);
-//		Alojamento aloj2 = new Alojamento(4, vol2);
-//		Alojamento aloj3 = new Alojamento(7, vol1);
-//		Alojamento aloj4 = new Alojamento(7, vol3);
-//		
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj1);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj2);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj3);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("NORTE", lr, aloj4);
-//		
-//		migMatcher.getRegistaAjudaHandler().indicaDescricaoItem(new Item("banana", vol3));
-//		
-//		//List<Ajuda> la = migMatcher.getProcuraAjudaHandler().indicaRegiaoEscolhida("CENTRO", lr, strat);
-//		
-//	}
-
 }

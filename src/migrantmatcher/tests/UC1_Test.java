@@ -3,23 +3,20 @@ package migrantmatcher.tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import com.telegramsms.TelegramSMSSender;
+
 import migrantmatcher.MigrantMatcher;
-import migrantmatcher.controllers.ProcuraAjudaHandler;
 import migrantmatcher.controllers.RegistaAjudaHandler;
-import migrantmatcher.domain.Ajuda;
 import migrantmatcher.domain.Alojamento;
 import migrantmatcher.domain.Item;
-import migrantmatcher.domain.Migrante;
 import migrantmatcher.domain.Regiao;
 import migrantmatcher.domain.Voluntario;
-import migrantmatcher.exceptions.AjudaNaoDefinidaException;
 import migrantmatcher.exceptions.RegiaoNaoDisponivelException;
-import migrantmatcher.strategies.OrdenaAjudasPorDataDeDisponibilizacao;
 
 class UC1_Test {
 
@@ -85,6 +82,8 @@ class UC1_Test {
 	/**
 	 * Testa se os Voluntarios e os respetivos alojamentos oferecidos foram colocados
 	 * no catálogo de alojamentos.
+	 * 
+	 * @throws RegiaoNaoDisponivelException
 	 */
 	@Test
 	void testOferecerAlojamento() throws RegiaoNaoDisponivelException {
@@ -93,40 +92,10 @@ class UC1_Test {
 		Voluntario vol = registaHandler.identificaVoluntario(contacto);
 		int numeroPessoas = 5;
 		List<Regiao> lr = registaHandler.indicaNumeroPessoas(numeroPessoas);
-		Alojamento aloj = migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, numeroPessoas, vol);
+		Alojamento aloj = registaHandler.indicaRegiao("CENTRO", lr, numeroPessoas, vol);
 		
 		assertEquals(true, migMatcher.getCatalogoAlojamentos().getListaAlojamentos().contains(aloj));
 		assertEquals(true, migMatcher.getCatalogoAlojamentos().getListaAlojamentos().get(0).getVoluntario().getContacto() == contacto);
 
 	}
-	
-
-	
-	
-//	@Test
-//	void testListaAjudasOrdenadaPorDataDisponibilidade() throws RegiaoNaoDisponivelException {
-//		
-//		MigrantMatcher migMatcher = new MigrantMatcher();
-//		
-//		Voluntario vol1 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(1234);
-//		Voluntario vol2 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(12345);
-//		Voluntario vol3 = migMatcher.getRegistaAjudaHandler().identificaVoluntario(123456);
-//		
-//		List<Regiao> lr = migMatcher.getRegistaAjudaHandler().indicaNumeroPessoas(3);
-//		
-//		Alojamento aloj1 = new Alojamento(3, vol1);
-//		Alojamento aloj2 = new Alojamento(4, vol2);
-//		Alojamento aloj3 = new Alojamento(7, vol1);
-//		Alojamento aloj4 = new Alojamento(7, vol3);
-//		
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj1);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj2);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("CENTRO", lr, aloj3);
-//		migMatcher.getRegistaAjudaHandler().indicaRegiao("NORTE", lr, aloj4);
-//		
-//		migMatcher.getRegistaAjudaHandler().indicaDescricaoItem(new Item("banana", vol3));
-//		
-//		//List<Ajuda> la = migMatcher.getProcuraAjudaHandler().indicaRegiaoEscolhida("CENTRO", lr, strat);
-//		
-//	}
 }
