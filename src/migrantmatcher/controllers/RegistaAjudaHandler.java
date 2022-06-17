@@ -26,35 +26,14 @@ public class RegistaAjudaHandler extends Handler {
 		this.lr = lr;
 	}
 
-	/**
-	 * Devolve o voluntário com o contacto dado
-	 * @param contacto - contacto do voluntario a identificado
-	 * @ensures O {@code v}:Voluntário é registado com {@code v.contacto = contacto}
-	 * @return o voluntário com o contacto dado
-	 */
 	public Voluntario identificaVoluntario(int contacto) {
 		return catVoluntarios.getVoluntario(contacto);
 	}
 
-	/**
-	 * 
-	 * @param numero
-	 * @requires
-	 * @ensures
-	 * @return
-	 */
 	public List<Regiao> indicaNumeroPessoas(int numero) {	
 		return lr.getListaRegioes();
 	}
 
-	/**
-	 * Devolve a regiao onde se encontra o alojamento a ser oferecido como ajuda pelo Voluntario.
-	 * @param nomeRegiao - nome da regiao onde se encontra o alojamento
-	 * @requires
-	 * @ensures
-	 * @return a regiao que tem {@code nomeRegiao} como nome 
-	 * @throws RegiaoNaoDisponivelException
-	 */
 	public Alojamento indicaRegiao(String nomeRegiao, List<Regiao> listaRegioes, int numeroPessoas, Voluntario vol) throws RegiaoNaoDisponivelException{					
 		for (Regiao regiao : listaRegioes) {
 			if (regiao.getRegiao().equals(nomeRegiao)) {
