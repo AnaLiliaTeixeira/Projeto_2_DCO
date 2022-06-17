@@ -6,8 +6,6 @@ public class Alojamento extends Ajuda {
 
 	private Regiao regiao;
 	private int numeroPessoas;
-	private Voluntario voluntario;	
-	private LocalDateTime createdTime;
 	
 	public Alojamento(int numeroPessoas, Regiao regiao, Voluntario voluntario) {
 		this.nome = "Alojamento";
@@ -23,14 +21,6 @@ public class Alojamento extends Ajuda {
 
 	public int getNumeroPessoas() {
 		return numeroPessoas;
-	}
-	
-	public Voluntario getVoluntario() {
-		return voluntario;
-	}
-
-	public LocalDateTime getCreatedTime() {
-		return createdTime;
 	}
 
 }
