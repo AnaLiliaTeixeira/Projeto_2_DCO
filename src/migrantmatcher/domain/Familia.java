@@ -3,7 +3,7 @@ package migrantmatcher.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Familia extends CatalogoMigrantes{
+public class Familia extends PessoaMigrante {
 
 	private int numero_pessoas;
 	private String cc_nome;

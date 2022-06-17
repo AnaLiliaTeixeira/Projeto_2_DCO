@@ -1,6 +1,6 @@
 package migrantmatcher.domain;
 
-public class Migrante extends CatalogoMigrantes{
+public class Migrante extends PessoaMigrante {
 
 	private String nome;
 	private int contacto;
@@ -17,5 +17,4 @@ public class Migrante extends CatalogoMigrantes{
 	public int getContacto() {
 		return this.contacto;
 	}
-
 }
