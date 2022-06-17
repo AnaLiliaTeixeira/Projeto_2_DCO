@@ -21,7 +21,6 @@ public class MainVoluntario {
 		Random rd = new Random();
 		Scanner sc = new Scanner(System.in);
 
-
 		System.out.print("Indique o seu contacto: ");
 		int contacto = Integer.parseInt(sc.nextLine());
 		Voluntario vol = handler.identificaVoluntario(contacto);	
@@ -46,12 +45,12 @@ public class MainVoluntario {
 			ajuda = sc.nextLine();
 		}
 
-		//TelegramSMSSender smsSender = new TelegramSMSSender();
+		TelegramSMSSender smsSender = new TelegramSMSSender();
 		int codigo_unico = (rd.nextInt(999999) + 1);
 		String.format("%06d", codigo_unico);
-//		smsSender.setNumber(Integer.toString(codigo_unico));
-//		smsSender.setText(new StringBuilder(codigo_unico).toString());
-//		smsSender.send();
+		smsSender.setNumber(Integer.toString(codigo_unico));
+		smsSender.setText(new StringBuilder(codigo_unico).toString());
+		smsSender.send();
 
 		System.out.print("Insira o código único: ");
 		int codigo_inserido = Integer.parseInt(sc.nextLine());
