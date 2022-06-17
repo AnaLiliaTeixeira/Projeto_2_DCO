@@ -4,11 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-
-import com.telegramsms.TelegramSMSSender;
 
 import migrantmatcher.MigrantMatcher;
 import migrantmatcher.controllers.RegistaAjudaHandler;
